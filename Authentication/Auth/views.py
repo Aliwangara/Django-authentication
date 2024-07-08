@@ -2,9 +2,22 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+import logging
+
+
 
 
 # Create your views here.
+
+def home(request):
+    pass
+    return render (request, "Home.html", )
+
+
+
+
+
+
 def sign_up(request):
     if request.method == "POST":
         f_name = request.POST.get('FirstName')
@@ -27,6 +40,20 @@ def sign_up(request):
         myuser = User.objects.create_user(mail, mail, first_password)
         myuser.save
         messages.success(request, "User Created Successfully")
-        # return redirect('signin')
+        return redirect('Login')
 
     return render(request, "Signup.html")
+
+
+def Log(request):
+    if request.method == "POST":
+        mail= request.POST.get('email')
+        first_password= request.POST.get('pass1')
+        myuser =authenticate(username= mail, password =first_password)
+        if myuser is not None:
+            login(request, myuser)
+            messages.success(request, "Login Success")
+            return redirect('home')
+        else:
+            messages.warning(request, "Invalid credentials")
+    return render(request, "Login.html")
